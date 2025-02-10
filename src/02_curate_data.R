@@ -101,6 +101,12 @@ season_data_player_modes_with_roles <- season_data_player_modes %>%
 season_data_player_per_mode <- season_data_player_modes_with_roles %>%
   select(player, role, everything())
 
+# Convert win_rate to percentage and round to 1 decimal places
+season_data_player_per_mode <- season_data_player %>%
+  mutate(
+    win_rate = round(win_rate * 100, 1)  # Convert to percentage
+  )
+
 # ----------------------------------------
 # Step 4: Create curated data file
 # ----------------------------------------
