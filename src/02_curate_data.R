@@ -2,84 +2,59 @@
 # Data Curation
 # ----------------------------------------
 # This script processes raw data:
-# 1. Loads data from csvs
-# 2. Cleans the data (removes NAs, duplicates, etc.)
-# 3. Transforms the data (format changes, feature engineering, etc.)
-# 4. Save transformed data
+# 1. Creates player stats table
+# 2. Creates player stats csv file
+# 3. Creates player stats per mode table
+# 4. Creates player stats per mode csv file
 # ----------------------------------------
 
 # Load necessary libraries
-# library()
+library(dplyr)
 
 # ----------------------------------------
-# Step 1: Load Data
+# Step 1: Player stats
 # ----------------------------------------
 
-dir_path <- "data/raw"
+# Custom function to calculate the mode
+get_mode <- function(x) {
+  uniq_x <- unique(x)
+  uniq_x[which.max(tabulate(match(x, uniq_x)))] # Get the most frequent value
+}
 
-# Example of loading data (adjust to your data source)
-dallas_data <- read.csv(file.path(dir_path, "data-2017-12-10-dallas.csv"))
-neworleans_data <- read.csv(file.path(dir_path, "data-2018-01-14-neworleans.csv"))
-atlanta_data <- read.csv(file.path(dir_path, "data-2018-03-11-atlanta.csv"))
-birmingham_data <- read.csv(file.path(dir_path, "data-2018-04-01-birmingham.csv"))
-proleague1_data <- read.csv(file.path(dir_path, "data-2018-04-08-proleague1.csv"))
-relegation_data <- read.csv(file.path(dir_path, "data-2018-04-19-relegation.csv"))
-seattle_data <- read.csv(file.path(dir_path, "data-2018-04-22-seattle.csv"))
-anaheim_data <- read.csv(file.path(dir_path, "data-2018-06-17-anaheim.csv"))
-proleague2_data <- read.csv(file.path(dir_path,"data-2018-07-29-proleague2.csv"))
-champs_data <- read.csv(file.path(dir_path, "data-2018-08-19-champs.csv"))
+# Group data
+season_data_player_base <- season_data %>% 
+  group_by(player) %>% 
+  summarise(
+    matches_played = n_distinct(series_id),  # Count unique matches
+    win_rate = mean(result == "W"),           # Calculate win rate (percentage of "win" results)
+    kd = sum(kills) / sum(deaths),           # Kill/Death ratio
+    favourite_weapon = get_mode(favourite_weapon), # Get the mode (most frequent weapon)
+    .groups = "drop"
+  ) %>% 
+  filter(
+    matches_played > 5  # Keep only players with more than 5 matches
+  ) %>% 
+  arrange(desc(win_rate)) %>% 
+  mutate(
+    role = case_when(
+      favourite_weapon == "PPSh-41" ~ "SMG",       # If weapon is PPSH, mark as SMG
+      favourite_weapon == "STG-44" ~ "AR",          # If weapon is AK-47, mark as Assault Rifle
+      favourite_weapon == "BAR" ~ "AR",
+      favourite_weapon == "FG 42" ~ "AR", # If weapon is M4A1, mark as Assault Rifle
+      TRUE ~ "Z"                              # Else, mark as Z
+    )
+  ) %>% 
+  select(-favourite_weapon) # Remove the favourite_weapon column after calculating role
 
-# Print a message to confirm data is loaded
-message("Data loaded successfully!")
-
-# ----------------------------------------
-# Step 2: Clean Data
-# ----------------------------------------
-
-# Append data together
-season_data <- rbind(dallas_data, 
-                     neworleans_data, 
-                     atlanta_data, 
-                     birmingham_data, 
-                     proleague1_data,
-                     relegation_data, 
-                     seattle_data,
-                     anaheim_data, 
-                     proleague2_data,
-                     champs_data 
-)
-
-# Remove rows with NA values in essential columns
-#clean_data <- data %>%
-#  filter(!is.na(column_name))
-
-# Remove duplicate rows
-#clean_data <- clean_data %>%
-#  distinct()
-
-# Print message after cleaning
-#message("Data cleaned successfully!")
+season_data_player <- season_data_player_base %>%
+  select(player, role, everything())
 
 # ----------------------------------------
-# Step 3: Transform Data
-# ----------------------------------------
-
-# Example: Create a new feature based on existing columns
-#clean_data <- clean_data %>%
-#  mutate(new_feature = column1 + column2)
-
-# Example: Format a date column
-#clean_data$date_column <- as.Date(clean_data$date_column, format = "%Y-%m-%d")
-
-# Print message after transformation
-#message("Data transformed successfully!")
-
-# ----------------------------------------
-# Step 5: Save Curated Data
+# Step 2: Create curated data file
 # ----------------------------------------
 
 # Define the directory path
-dir_path <- "data/processed"
+dir_path <- "data/curated"
 
 # Check if the directory exists, if not, create it
 if (!dir.exists(dir_path)) {
@@ -87,7 +62,51 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-write.csv(season_data, file.path(dir_path, "2018_season_data.csv"))
+write.csv(season_data_player, file.path(dir_path, "2018_season_data_player.csv"))
 
 # Print confirmation message
-message("Processed data saved successfully!")
+message("Curated data saved successfully!")
+
+# ----------------------------------------
+# Step 3: Player stats per game mode
+# ----------------------------------------
+
+# Group data
+season_data_player_modes <- season_data %>% 
+  group_by(player, mode) %>% 
+  summarise(
+    matches_played = n_distinct(series_id),  # Count unique matches
+    win_rate = mean(result == "W"),           # Calculate win rate (percentage of "win" results)
+    kd = sum(kills) / sum(deaths),           # Kill/Death ratio
+    .groups = "drop"
+  ) %>% 
+  filter(
+    matches_played > 5  # Keep only players with more than 5 matches
+  ) %>% 
+  arrange(desc(win_rate))
+
+# Join roles onto data
+season_data_player_modes_with_roles <- season_data_player_modes %>%
+  left_join(season_data_player %>% select(player, role), by = "player")
+
+# Reorder columns
+season_data_player_per_mode <- season_data_player_modes_with_roles %>%
+  select(player, role, everything())
+
+# ----------------------------------------
+# Step 4: Create curated data file
+# ----------------------------------------
+
+# Define the directory path
+dir_path <- "data/curated"
+
+# Check if the directory exists, if not, create it
+if (!dir.exists(dir_path)) {
+  dir.create(dir_path, recursive = TRUE)
+}
+
+# Write the CSV file
+write.csv(season_data_player_per_mode, file.path(dir_path, "2018_season_data_player_per_mode.csv"))
+
+# Print confirmation message
+message("Curated data saved successfully!")
