@@ -80,7 +80,7 @@ message("Curated data saved successfully!")
 # ----------------------------------------
 
 # Group data
-season_data_player_modes <- season_data %>% 
+season_data_player_per_mode <- season_data %>% 
   group_by(player, mode) %>% 
   summarise(
     series_played = n_distinct(series_id),  # Count unique matches
@@ -94,15 +94,15 @@ season_data_player_modes <- season_data %>%
   arrange(desc(win_rate))
 
 # Join roles onto data
-season_data_player_modes_with_roles <- season_data_player_modes %>%
+season_data_player_per_mode <- season_data_player_per_mode %>%
   left_join(season_data_player %>% select(player, role), by = "player")
 
 # Reorder columns
-season_data_player_per_mode <- season_data_player_modes_with_roles %>%
+season_data_player_per_mode <- season_data_player_per_mode %>%
   select(player, role, everything())
 
 # Convert win_rate to percentage and round to 1 decimal places
-season_data_player_per_mode <- season_data_player %>%
+season_data_player_per_mode <- season_data_player_per_mode %>%
   mutate(
     win_rate = round(win_rate * 100, 1)  # Convert to percentage
   )
