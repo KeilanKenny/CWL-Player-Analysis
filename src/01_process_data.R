@@ -87,7 +87,7 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-write.csv(season_data, file.path(dir_path, "season_data.csv"))
+write.csv(season_data, file.path(dir_path, "2018_season_data.csv"))
 
 # Print confirmation message
 message("Processed data saved successfully!")
