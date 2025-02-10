@@ -25,14 +25,14 @@ get_mode <- function(x) {
 season_data_player <- season_data %>% 
   group_by(player) %>% 
   summarise(
-    matches_played = n_distinct(series_id),  # Count unique matches
+    series_played = n_distinct(series_id),  # Count unique matches
     win_rate = mean(result == "W"),           # Calculate win rate (percentage of "win" results)
     kd = sum(kills) / sum(deaths),           # Kill/Death ratio
     favourite_weapon = get_mode(favourite_weapon), # Get the mode (most frequent weapon)
     .groups = "drop"
   ) %>% 
   filter(
-    matches_played > 5  # Keep only players with more than 5 matches
+    series_played > 5  # Keep only players with more than 5 matches
   ) %>% 
   arrange(desc(win_rate)) %>% 
   mutate(
@@ -83,13 +83,13 @@ message("Curated data saved successfully!")
 season_data_player_modes <- season_data %>% 
   group_by(player, mode) %>% 
   summarise(
-    matches_played = n_distinct(series_id),  # Count unique matches
+    series_played = n_distinct(series_id),  # Count unique matches
     win_rate = mean(result == "W"),           # Calculate win rate (percentage of "win" results)
     kd = sum(kills) / sum(deaths),           # Kill/Death ratio
     .groups = "drop"
   ) %>% 
   filter(
-    matches_played > 5  # Keep only players with more than 5 matches
+    series_played > 5  # Keep only players with more than 5 matches
   ) %>% 
   arrange(desc(win_rate))
 
