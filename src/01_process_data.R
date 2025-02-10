@@ -8,6 +8,9 @@
 # 4. Save transformed data
 # ----------------------------------------
 
+# Set working directory to project folder
+setwd(dirname(getwd()))
+
 # Load necessary libraries
 # library()
 
@@ -15,6 +18,7 @@
 # Step 1: Load Data
 # ----------------------------------------
 
+# File path to raw data
 dir_path <- "data/raw"
 
 # Example of loading data (adjust to your data source)
@@ -48,6 +52,11 @@ season_data <- rbind(dallas_data,
                      proleague2_data,
                      champs_data 
 )
+
+# Rename columns
+colnames(season_data) <- c("match_id", 
+                           "series_id"
+                           )
 
 # Remove rows with NA values in essential columns
 #clean_data <- data %>%
