@@ -22,7 +22,7 @@ get_mode <- function(x) {
 }
 
 # Group data
-season_data_player_base <- season_data %>% 
+season_data_player <- season_data %>% 
   group_by(player) %>% 
   summarise(
     matches_played = n_distinct(series_id),  # Count unique matches
@@ -46,8 +46,16 @@ season_data_player_base <- season_data %>%
   ) %>% 
   select(-favourite_weapon) # Remove the favourite_weapon column after calculating role
 
-season_data_player <- season_data_player_base %>%
+# Reorder columns
+season_data_player <- season_data_player %>%
   select(player, role, everything())
+
+# Convert win_rate to percentage and round to 1 decimal places
+season_data_player <- season_data_player %>%
+  mutate(
+    win_rate = round(win_rate * 100, 1)  # Convert to percentage
+  )
+
 
 # ----------------------------------------
 # Step 2: Create curated data file
