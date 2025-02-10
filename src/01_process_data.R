@@ -8,6 +8,9 @@
 # 4. Save transformed data
 # ----------------------------------------
 
+# Set working directory to project folder
+setwd(dirname(getwd()))
+
 # Load necessary libraries
 # library()
 
@@ -15,6 +18,7 @@
 # Step 1: Load Data
 # ----------------------------------------
 
+# File path to raw data
 dir_path <- "data/raw"
 
 # Example of loading data (adjust to your data source)
@@ -49,9 +53,73 @@ season_data <- rbind(dallas_data,
                      champs_data 
 )
 
-# Remove rows with NA values in essential columns
-#clean_data <- data %>%
-#  filter(!is.na(column_name))
+# Rename columns
+colnames(season_data) <- c("match_id", 
+                           "series_id",
+                           "end_time",
+                           "map_duration",
+                           "mode",
+                           "map",
+                           "team",
+                           "player",
+                           "result",
+                           "score",
+                           "kills",
+                           "deaths",
+                           "+/-",
+                           "k/d",
+                           "kills_per_10min",
+                           "deaths_per_10min",
+                           "assists",
+                           "headshots",
+                           "suicides",
+                           "team_kills",
+                           "team_deaths",
+                           "kills_untraded",
+                           "shots_hit",
+                           "shots",
+                           "accuracy_%",
+                           "num_lives",
+                           "time_alive_s",
+                           "avg_time_per_life_s",
+                           "favourite_weapon",
+                           "favourite_division",
+                           "favourite_basic_training",
+                           "favourite_scorestreaks",
+                           "hp_hill_time_s",
+                           "hp_hill_captures",
+                           "hp_hill_defends",
+                           "snd_rounds",
+                           "snd_first_bloods",
+                           "snd_first_deaths",
+                           "snd_rounds_survived",
+                           "snd_bomb_pickups",
+                           "snd_bomb_plants",
+                           "snd_bomb_defuses",
+                           "snd_bomb_sneak_defuses",
+                           "snd_1_kill_round",
+                           "snd_2_kill_round",
+                           "snd_3_kill_round",
+                           "snd_4_kill_round",
+                           "ctf_captures",
+                           "ctf_returns",
+                           "ctf_pickups",
+                           "ctf_defends",
+                           "ctf_kill_carriers",
+                           "ctf_flag_carry_time_s",
+                           "2_piece",
+                           "3_piece",
+                           "4_piece",
+                           "4_streak",
+                           "5_streak",
+                           "6_streak",
+                           "7_streak",
+                           "8+_streak",
+                           "scorestreaks_used",
+                           "scorestreaks_deployed",
+                           "scorestreaks_kills",
+                           "scorestreaks_assists"
+                           )
 
 # Remove duplicate rows
 #clean_data <- clean_data %>%
