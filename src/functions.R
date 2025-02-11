@@ -1,21 +1,21 @@
 # functions.R
 
 #---------------------------------------------------------------
-# Function to save a CSV only if the current Git branch is 'main'
+# Function to save a CSV only if the current Git branch is 'master'
 #---------------------------------------------------------------
-save_csv_if_main <- function(data, folder, file_name) {
+save_csv_if_master <- function(data, folder, file_name) {
   # Get the current Git branch
   branch <- system("git rev-parse --abbrev-ref HEAD", intern = TRUE)
   
   # Construct the full output path
   output_path <- file.path(folder, file_name)
   
-  # Check if the branch is 'main' and create CSV
-  if (branch == "main") {
+  # Check if the branch is 'master' and create CSV
+  if (branch == "master") {
     write.csv(data, output_path, row.names = FALSE)
     message(paste("✅ CSV created at:", output_path))
   } else {
-    message("⚠️ Skipping CSV creation (not on 'main' branch)")
+    message("⚠️ Skipping CSV creation (not on 'master' branch)")
   }
 }
 

@@ -71,7 +71,7 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-save_csv_if_main(season_data, folder = dir_path, file_name = file_name)
+save_csv_if_master(season_data, folder = dir_path, file_name = file_name)
 
 # ----------------------------------------
 # Step 3: Player stats per game mode
@@ -119,4 +119,4 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-save_csv_if_main(season_data, folder = dir_path, file_name = file_name)
+save_csv_if_master(season_data, folder = dir_path, file_name = file_name)
