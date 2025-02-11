@@ -61,8 +61,9 @@ season_data_player <- season_data_player %>%
 # Step 2: Create curated data file
 # ----------------------------------------
 
-# Define the directory path
-dir_path <- "data/curated"
+# Define the directory path and file name
+dir_path <- "../data/curated"
+file_name <- "2018_season_data_player.csv"
 
 # Check if the directory exists, if not, create it
 if (!dir.exists(dir_path)) {
@@ -70,10 +71,7 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-write.csv(season_data_player, file.path(dir_path, "2018_season_data_player.csv"))
-
-# Print confirmation message
-message("Curated data saved successfully!")
+save_csv_if_main(season_data, folder = dir_path, file_name = file_name)
 
 # ----------------------------------------
 # Step 3: Player stats per game mode
@@ -111,8 +109,9 @@ season_data_player_per_mode <- season_data_player_per_mode %>%
 # Step 4: Create curated data file
 # ----------------------------------------
 
-# Define the directory path
-dir_path <- "data/curated"
+# Define the directory path and file name
+dir_path <- "../data/curated"
+file_name <- "2018_season_data_player_per_mode.csv"
 
 # Check if the directory exists, if not, create it
 if (!dir.exists(dir_path)) {
@@ -120,7 +119,4 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-write.csv(season_data_player_per_mode, file.path(dir_path, "2018_season_data_player_per_mode.csv"))
-
-# Print confirmation message
-message("Curated data saved successfully!")
+save_csv_if_main(season_data, folder = dir_path, file_name = file_name)

@@ -8,18 +8,18 @@
 # 4. Save transformed data
 # ----------------------------------------
 
-# Set working directory to project folder
-setwd(dirname(getwd()))
-
 # Load necessary libraries
 # library()
+
+# Source function script
+source("functions.R")
 
 # ----------------------------------------
 # Step 1: Load Data
 # ----------------------------------------
 
 # File path to raw data
-dir_path <- "data/raw"
+dir_path <- "../data/raw"
 
 # Example of loading data (adjust to your data source)
 dallas_data <- read.csv(file.path(dir_path, "data-2017-12-10-dallas.csv"))
@@ -148,7 +148,8 @@ colnames(season_data) <- c("match_id",
 # ----------------------------------------
 
 # Define the directory path
-dir_path <- "data/processed"
+dir_path <- "../data/processed"
+file_name <- "2018_season_data.csv"
 
 # Check if the directory exists, if not, create it
 if (!dir.exists(dir_path)) {
@@ -156,7 +157,4 @@ if (!dir.exists(dir_path)) {
 }
 
 # Write the CSV file
-write.csv(season_data, file.path(dir_path, "2018_season_data.csv"))
-
-# Print confirmation message
-message("Processed data saved successfully!")
+save_csv_if_main(season_data, folder = dir_path, file_name = file_name)
